@@ -1,5 +1,5 @@
 /**
- * Purwokerto Kanopi — Interactive Consultation, Yard Photo Preview & Video Gallery
+ * Purwokerto Kanopi — Interactive Consultation, Yard Photo AI Preview, Lead Collector & Video Gallery
  */
 (function () {
   'use strict';
@@ -10,11 +10,13 @@
   const state = {
     selectedModelId: cfg.canopyModels[0].id,
     yardPhotoUrl: null,
+    yardPhotoFile: null,
     yardPhotoName: '',
     yardAngle: 'Tampak Depan',
     yardLength: 5,
     yardWidth: 4,
     yardNotes: '',
+    aiNotes: '',
     currentStep: 0,
     answers: {},
     selectedLocationId: cfg.locations[0].id,
@@ -46,7 +48,7 @@
       toast.style.opacity = '0';
       toast.style.transition = 'opacity 0.25s ease';
       setTimeout(() => toast.remove(), 250);
-    }, 3200);
+    }, 3400);
   }
 
   function getSelectedModel() {
@@ -55,6 +57,15 @@
 
   function getSelectedLocation() {
     return cfg.locations.find((l) => l.id === state.selectedLocationId) || cfg.locations[0];
+  }
+
+  function syncAddressInputs(value, sourceEl) {
+    state.addressText = value.trim();
+    const locAddr = document.getElementById('location-address-input');
+    const leadAddr = document.getElementById('lead-address');
+    if (locAddr && sourceEl !== locAddr) locAddr.value = value;
+    if (leadAddr && sourceEl !== leadAddr) leadAddr.value = value;
+    renderSummary();
   }
 
   // --- Theme Toggle ---
@@ -97,7 +108,7 @@
     });
   }
 
-  // --- Yard Photo Uploader & Dimensions ---
+  // --- Yard Photo Uploader, AI Simulation & Dimensions ---
   function initYardUploader() {
     const dropzone = document.getElementById('yard-dropzone');
     const fileInput = document.getElementById('yard-file-input');
@@ -109,14 +120,20 @@
     const removeBtn = document.getElementById('yard-remove-btn');
     const changeBtn = document.getElementById('yard-change-btn');
     const sampleBtn = document.getElementById('use-sample-photo-btn');
+    const aiBtn = document.getElementById('ai-preview-btn');
+    const aiBox = document.getElementById('ai-preview-result');
     const lengthInput = document.getElementById('yard-length');
     const widthInput = document.getElementById('yard-width');
     const areaOutput = document.getElementById('yard-area-output');
     const notesInput = document.getElementById('yard-notes');
 
-    function setPreview(url, name) {
+    function setPreview(url, name, fileObj) {
       state.yardPhotoUrl = url;
       state.yardPhotoName = name;
+      state.yardPhotoFile = fileObj || null;
+      state.aiNotes = '';
+      aiBox.classList.add('hidden');
+      aiBox.innerHTML = '';
       previewImg.src = url;
       fileMeta.textContent = name;
       emptyState.classList.add('hidden');
@@ -129,9 +146,13 @@
         URL.revokeObjectURL(state.yardPhotoUrl);
       }
       state.yardPhotoUrl = null;
+      state.yardPhotoFile = null;
       state.yardPhotoName = '';
+      state.aiNotes = '';
       fileInput.value = '';
       previewImg.src = '';
+      aiBox.classList.add('hidden');
+      aiBox.innerHTML = '';
       emptyState.classList.remove('hidden');
       previewState.classList.add('hidden');
       renderSummary();
@@ -144,14 +165,18 @@
         showToast('Mohon unggah file gambar (JPG, PNG, WEBP).');
         return;
       }
+      if (file.size > 10 * 1024 * 1024) {
+        showToast('Ukuran foto maksimal 10 MB.');
+        return;
+      }
       const objectUrl = URL.createObjectURL(file);
       const sizeKb = Math.round(file.size / 1024);
-      setPreview(objectUrl, `${file.name} (${sizeKb} KB)`);
+      setPreview(objectUrl, `${file.name} (${sizeKb} KB)`, file);
       showToast('Foto halaman rumah berhasil dimuat.', 'success');
     }
 
     dropzone.addEventListener('click', (e) => {
-      if (e.target.closest('#yard-remove-btn') || e.target.closest('#yard-change-btn')) return;
+      if (e.target.closest('#yard-remove-btn') || e.target.closest('#yard-change-btn') || e.target.closest('#ai-preview-btn')) return;
       if (!state.yardPhotoUrl) fileInput.click();
     });
 
@@ -173,9 +198,87 @@
       showToast('Foto halaman dihapus.');
     });
 
-    sampleBtn.addEventListener('click', () => {
-      setPreview('assets/img/halaman-rumah-pergola.jpg', 'Contoh Halaman Rumah (Purwokerto)');
+    sampleBtn.addEventListener('click', async () => {
+      try {
+        const resp = await fetch('assets/img/halaman-rumah-pergola.jpg');
+        const blob = await resp.blob();
+        const file = new File([blob], 'contoh-halaman-rumah.jpg', { type: 'image/jpeg' });
+        setPreview('assets/img/halaman-rumah-pergola.jpg', 'Contoh Halaman Rumah (Purwokerto)', file);
+      } catch (_) {
+        setPreview('assets/img/halaman-rumah-pergola.jpg', 'Contoh Halaman Rumah (Purwokerto)', null);
+      }
       showToast('Foto contoh halaman rumah dimuat.', 'success');
+    });
+
+    aiBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      if (!state.yardPhotoFile) {
+        showToast('Silakan unggah foto halaman rumah Anda terlebih dahulu.');
+        return;
+      }
+      const model = getSelectedModel();
+      const loc = getSelectedLocation();
+
+      aiBtn.disabled = true;
+      const originalHtml = aiBtn.innerHTML;
+      aiBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5" aria-hidden="true"></i> Memproses AI...';
+      aiBox.classList.remove('hidden');
+      aiBox.innerHTML = `
+        <div class="animate-pulse space-y-2">
+          <div class="h-3 bg-amber-500/25 rounded w-1/3"></div>
+          <div class="h-3 bg-amber-500/15 rounded w-full"></div>
+          <div class="h-3 bg-amber-500/15 rounded w-5/6"></div>
+        </div>
+      `;
+
+      try {
+        const fd = new FormData();
+        fd.append('yard_photo', state.yardPhotoFile);
+        fd.append('canopy_model', model.name);
+        fd.append('roof_material', model.roofMaterial);
+        fd.append('frame_material', model.frameMaterial);
+        fd.append('yard_angle', state.yardAngle);
+        fd.append('district', loc.name);
+        fd.append('yard_length', String(state.yardLength));
+        fd.append('yard_width', String(state.yardWidth));
+
+        const res = await fetch('api/ai-visualize.php', { method: 'POST', body: fd });
+        const data = await res.json();
+
+        if (!res.ok || !data.ok) {
+          throw new Error(data.error || 'Gagal menjalankan simulasi AI.');
+        }
+
+        state.aiNotes = data.analysis || '';
+        const imgHtml = data.mode === 'image' && data.imageBase64
+          ? `<div class="rounded-xl overflow-hidden bg-slate-900 aspect-[4/3]">
+               <img src="data:${escapeHtml(data.imageMime || 'image/png')};base64,${data.imageBase64}" alt="Simulasi AI kanopi di halaman rumah" class="w-full h-full object-cover" />
+             </div>`
+          : '';
+        const quotaNote = data.imageQuotaLimited
+          ? `<p class="text-[11px] text-ink-muted italic">Catatan: Render gambar AI sedang dalam batas kuota gratis API, sehingga sistem menampilkan analisa arsitektural langsung dari foto halaman Anda.</p>`
+          : '';
+
+        aiBox.innerHTML = `
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-xs font-extrabold uppercase tracking-wider text-gold">
+              <i class="fa-solid fa-wand-magic-sparkles mr-1" aria-hidden="true"></i>
+              ${data.mode === 'image' ? 'Hasil Simulasi Visual AI' : 'Analisa Arsitektur Foto AI'}
+            </span>
+            <span class="text-[11px] font-bold text-ink-muted">${escapeHtml(model.name)}</span>
+          </div>
+          ${imgHtml}
+          <div class="text-xs sm:text-sm text-ink-primary whitespace-pre-line leading-relaxed">${escapeHtml(data.analysis || '')}</div>
+          ${quotaNote}
+        `;
+        showToast('Analisa AI untuk foto halaman rumah selesai.', 'success');
+      } catch (err) {
+        aiBox.innerHTML = `<p class="text-xs font-semibold text-ink-secondary">${escapeHtml(err.message)}</p>`;
+        showToast(err.message);
+      } finally {
+        aiBtn.disabled = false;
+        aiBtn.innerHTML = originalHtml;
+      }
     });
 
     fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
@@ -213,7 +316,7 @@
       const w = parseFloat(widthInput.value) || 0;
       state.yardLength = l;
       state.yardWidth = w;
-      const area = (l * w).toFixed(l * w % 1 === 0 ? 0 : 1);
+      const area = (l * w).toFixed((l * w) % 1 === 0 ? 0 : 1);
       areaOutput.textContent = `${area} m²`;
       renderSummary();
     }
@@ -366,7 +469,7 @@
 
     prevBtn.disabled = state.currentStep === 0;
     nextBtn.innerHTML = state.currentStep === total - 1
-      ? '<span>Selesai &amp; Cek Ringkasan</span> <i class="fa-solid fa-check ml-2" aria-hidden="true"></i>'
+      ? '<span>Isi Nomor HP &amp; Alamat</span> <i class="fa-solid fa-arrow-right ml-2" aria-hidden="true"></i>'
       : '<span>Lanjut</span> <i class="fa-solid fa-arrow-right ml-2" aria-hidden="true"></i>';
   }
 
@@ -383,8 +486,11 @@
         state.currentStep += 1;
         renderWizard();
       } else {
-        document.getElementById('live-summary-list').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        showToast('Ringkasan kebutuhan Anda siap dikirim atau disalin.', 'success');
+        const nameEl = document.getElementById('lead-name');
+        if (nameEl) {
+          nameEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          nameEl.focus();
+        }
       }
     });
 
@@ -454,14 +560,15 @@
   }
 
   function initLocationInputs() {
-    const addrInput = document.getElementById('location-address-input');
+    const locAddr = document.getElementById('location-address-input');
+    const leadAddr = document.getElementById('lead-address');
     const gpsBtn = document.getElementById('detect-gps-btn');
     const gpsStatus = document.getElementById('gps-status-text');
 
-    addrInput.addEventListener('input', () => {
-      state.addressText = addrInput.value.trim();
-      renderSummary();
-    });
+    locAddr.addEventListener('input', () => syncAddressInputs(locAddr.value, locAddr));
+    if (leadAddr) {
+      leadAddr.addEventListener('input', () => syncAddressInputs(leadAddr.value, leadAddr));
+    }
 
     gpsBtn.addEventListener('click', () => {
       if (!navigator.geolocation) {
@@ -476,11 +583,11 @@
           const lng = pos.coords.longitude.toFixed(5);
           state.gpsCoords = `${lat}, ${lng}`;
           gpsStatus.textContent = `Koordinat tersimpan: ${state.gpsCoords}`;
-          if (!addrInput.value.trim()) {
-            addrInput.value = `https://maps.google.com/?q=${lat},${lng}`;
-            state.addressText = addrInput.value;
+          if (!state.addressText) {
+            syncAddressInputs(`https://maps.google.com/?q=${lat},${lng}`, null);
+          } else {
+            renderSummary();
           }
-          renderSummary();
           showToast('Titik koordinat lokasi berhasil disimpan.', 'success');
         },
         () => {
@@ -512,48 +619,24 @@
     `).join('');
   }
 
-  // --- Summary Builder ---
-  function buildSummaryText() {
-    const model = getSelectedModel();
-    const loc = getSelectedLocation();
-    const area = (state.yardLength * state.yardWidth).toFixed(state.yardLength * state.yardWidth % 1 === 0 ? 0 : 1);
-    const lines = [
-      `*Konsultasi ${cfg.brandName}* (${cfg.domain})`,
-      `• Model Kanopi: ${model.name} (${model.roofMaterial})`,
-      `• Foto Halaman: ${state.yardPhotoName ? `${state.yardPhotoName} [${state.yardAngle}]` : 'Belum diunggah (akan dikirim menyusul)'}`,
-      `• Perkiraan Ukuran: ${state.yardLength}m × ${state.yardWidth}m (${area} m²)`,
-      `• Lokasi Kecamatan: ${loc.name}`
-    ];
-    if (state.addressText) lines.push(`• Alamat / Maps: ${state.addressText}`);
-    if (state.gpsCoords) lines.push(`• Titik GPS: ${state.gpsCoords}`);
-    cfg.interactiveQuestions.forEach((q) => {
-      if (state.answers[q.id]) {
-        lines.push(`• ${q.stepLabel}: ${state.answers[q.id]}`);
-      }
-    });
-    if (state.yardNotes) lines.push(`• Catatan Halaman: ${state.yardNotes}`);
-    return lines.join('\n');
-  }
-
+  // --- Summary & Lead Submission ---
   function renderSummary() {
     const list = document.getElementById('live-summary-list');
     const model = getSelectedModel();
     const loc = getSelectedLocation();
-    const area = (state.yardLength * state.yardWidth).toFixed(state.yardLength * state.yardWidth % 1 === 0 ? 0 : 1);
+    const area = (state.yardLength * state.yardWidth).toFixed((state.yardLength * state.yardWidth) % 1 === 0 ? 0 : 1);
 
     const rows = [
       { label: 'Model Kanopi', value: model.name },
       { label: 'Foto Halaman', value: state.yardPhotoName ? `${state.yardAngle} (${state.yardPhotoName})` : 'Belum diunggah' },
       { label: 'Perkiraan Ukuran', value: `${state.yardLength} m × ${state.yardWidth} m (${area} m²)` },
-      { label: 'Kecamatan', value: loc.name },
-      { label: 'Alamat / Maps', value: state.addressText || 'Belum diisi' }
+      { label: 'Kecamatan', value: loc.name }
     ];
 
     cfg.interactiveQuestions.forEach((q) => {
-      rows.push({
-        label: q.stepLabel,
-        value: state.answers[q.id] || 'Belum dipilih'
-      });
+      if (state.answers[q.id]) {
+        rows.push({ label: q.stepLabel, value: state.answers[q.id] });
+      }
     });
 
     list.innerHTML = rows.map((r) => `
@@ -564,54 +647,84 @@
     `).join('');
   }
 
-  function initSummaryActions() {
-    const copyBtn = document.getElementById('copy-summary-btn');
-    const sendBtn = document.getElementById('send-consultation-btn');
+  function initLeadSubmission() {
+    const form = document.getElementById('lead-submit-form');
+    const submitBtn = document.getElementById('submit-lead-btn');
+    const successBox = document.getElementById('lead-success-box');
+    const ticketBadge = document.getElementById('lead-ticket-badge');
+    const successMsg = document.getElementById('lead-success-msg');
+    const sendAnotherBtn = document.getElementById('send-another-btn');
 
-    copyBtn.addEventListener('click', async () => {
-      const text = buildSummaryText();
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nameVal = document.getElementById('lead-name').value.trim();
+      const phoneVal = document.getElementById('lead-phone').value.trim();
+      const addrVal = document.getElementById('lead-address').value.trim();
+      const honeypotVal = document.getElementById('website_url').value;
+
+      if (nameVal.length < 2) {
+        showToast('Mohon isi nama lengkap Anda.');
+        return;
+      }
+      if (phoneVal.replace(/\D/g, '').length < 9) {
+        showToast('Mohon isi nomor HP yang valid (minimal 9 digit).');
+        return;
+      }
+      if (addrVal.length < 5) {
+        showToast('Mohon isi alamat rumah Anda.');
+        return;
+      }
+
+      const model = getSelectedModel();
+      const loc = getSelectedLocation();
+
+      const fd = new FormData();
+      fd.append('customer_name', nameVal);
+      fd.append('phone', phoneVal);
+      fd.append('address', addrVal);
+      fd.append('district', loc.name);
+      fd.append('gps_coords', state.gpsCoords);
+      fd.append('canopy_model', model.name);
+      fd.append('yard_angle', state.yardAngle);
+      fd.append('yard_length', String(state.yardLength));
+      fd.append('yard_width', String(state.yardWidth));
+      fd.append('yard_notes', state.yardNotes);
+      fd.append('ai_notes', state.aiNotes);
+      fd.append('answers_json', JSON.stringify(state.answers));
+      fd.append('website_url', honeypotVal);
+      if (state.yardPhotoFile) {
+        fd.append('yard_photo', state.yardPhotoFile);
+      }
+
+      submitBtn.disabled = true;
+      const origHtml = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i><span>Mengirim Data...</span>';
+
       try {
-        await navigator.clipboard.writeText(text);
-        showToast('Ringkasan konsultasi berhasil disalin.', 'success');
-      } catch (_) {
-        openModal('Salin Ringkasan', 'Siap Kirim', `<textarea class="bespoke-input w-full p-3 text-sm" rows="8" readonly>${escapeHtml(text)}</textarea>`);
+        const res = await fetch('api/submit-lead.php', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+          throw new Error(data.error || 'Gagal menyimpan data. Coba beberapa saat lagi.');
+        }
+
+        ticketBadge.textContent = data.ticketCode || 'PK-TERSIMPAN';
+        successMsg.textContent = data.message || 'Data Anda sudah diterima. Admin kami akan segera menghubungi Anda.';
+        form.classList.add('hidden');
+        successBox.classList.remove('hidden');
+        showToast('Data berhasil disimpan untuk dihubungi admin!', 'success');
+      } catch (err) {
+        showToast(err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = origHtml;
       }
     });
 
-    sendBtn.addEventListener('click', () => {
-      const text = buildSummaryText();
-      if (cfg.whatsappNumber) {
-        const waUrl = `https://wa.me/${encodeURIComponent(cfg.whatsappNumber)}?text=${encodeURIComponent(text)}`;
-        window.open(waUrl, '_blank', 'noopener,noreferrer');
-        return;
-      }
-      // Show interactive preview modal when WhatsApp number is not configured yet
-      openModal(
-        'Ringkasan Konsultasi Purwokerto Kanopi',
-        'Siap Dikirim',
-        `
-          <p class="text-sm text-ink-secondary">
-            Ringkasan pilihan model kanopi, pertanyaan interaktif, dan lokasi Anda sudah siap.
-            ${state.yardPhotoUrl ? 'Jangan lupa lampirkan juga file foto halaman rumah Anda saat menghubungi tim.' : ''}
-          </p>
-          <pre class="p-4 rounded-xl bg-elevated border border-emerald-900/10 dark:border-amber-400/20 text-xs sm:text-sm text-ink-primary whitespace-pre-wrap font-sans leading-relaxed">${escapeHtml(text)}</pre>
-          <p class="text-xs text-ink-muted">
-            Catatan pengelola: untuk mengaktifkan tombol WhatsApp otomatis, isi properti <code class="font-mono font-bold">whatsappNumber</code> di <code class="font-mono font-bold">data/site-config.js</code>.
-          </p>
-          <button id="modal-copy-btn" type="button" class="w-full bespoke-btn-primary py-3 rounded-xl text-sm font-bold">
-            <i class="fa-regular fa-copy mr-2" aria-hidden="true"></i> Salin Ringkasan Sekarang
-          </button>
-        `
-      );
-      const modalCopy = document.getElementById('modal-copy-btn');
-      if (modalCopy) {
-        modalCopy.addEventListener('click', async () => {
-          try {
-            await navigator.clipboard.writeText(text);
-            showToast('Ringkasan berhasil disalin ke clipboard.', 'success');
-          } catch (_) {}
-        });
-      }
+    sendAnotherBtn.addEventListener('click', () => {
+      form.reset();
+      syncAddressInputs('', null);
+      successBox.classList.add('hidden');
+      form.classList.remove('hidden');
     });
   }
 
@@ -749,7 +862,7 @@
     initLocationInputs();
     renderYardReferences();
     renderSummary();
-    initSummaryActions();
+    initLeadSubmission();
     renderVideos();
     initVideoFilters();
     initModal();

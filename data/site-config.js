@@ -6,9 +6,6 @@ window.PK_CONFIG = {
   brandName: 'Purwokerto Kanopi',
   domain: 'rumahkanopipurwokerto.com',
   city: 'Purwokerto & Banyumas',
-  // Isi nomor WhatsApp format internasional tanpa '+' (contoh: '62812xxxxxxxx').
-  // Jika kosong, tombol kirim akan menampilkan ringkasan siap salin.
-  whatsappNumber: '',
 
   canopyModels: [
     {

@@ -1,5 +1,9 @@
-# Folder proyek lain yang tidak ikut dalam repo Purwokerto Kanopi
+# Folder proyek lain & data sensitif/runtime
 aziizputri.hdweb.my.id/
 market.hdweb.my.id/
+storage/leads.db*
+storage/uploads/*
+!storage/.htaccess
+api/secrets.php
 .DS_Store
 Thumbs.db
