@@ -255,9 +255,6 @@
                <img src="data:${escapeHtml(data.imageMime || 'image/png')};base64,${data.imageBase64}" alt="Simulasi AI kanopi di halaman rumah" class="w-full h-full object-cover" />
              </div>`
           : '';
-        const quotaNote = data.imageQuotaLimited
-          ? `<p class="text-[11px] text-ink-muted italic">Catatan: Render gambar AI sedang dalam batas kuota gratis API, sehingga sistem menampilkan analisa arsitektural langsung dari foto halaman Anda.</p>`
-          : '';
 
         aiBox.innerHTML = `
           <div class="flex items-center justify-between gap-2">
@@ -269,7 +266,6 @@
           </div>
           ${imgHtml}
           <div class="text-xs sm:text-sm text-ink-primary whitespace-pre-line leading-relaxed">${escapeHtml(data.analysis || '')}</div>
-          ${quotaNote}
         `;
         showToast('Analisa AI untuk foto halaman rumah selesai.', 'success');
       } catch (err) {
