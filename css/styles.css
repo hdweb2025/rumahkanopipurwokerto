@@ -1,134 +1,246 @@
-/* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+/* Purwokerto Kanopi — Bespoke Luxury Dual-Mode Design System */
 
-/* Variables */
 :root {
-    --primary-color: #FFCC29;
-    --primary-hover: #e6b825;
-    --dark-color: #1A1A1A;
-    --light-gray: #F9FAFB;
-    --text-gray: #4B5563;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --bg-surface: #f4f7f5;
+  --bg-elevated: #eaf0ec;
+  --bg-card: #ffffff;
+  --header-bg: rgba(244, 247, 245, 0.86);
+  --border-card: rgba(0, 89, 83, 0.14);
+  --border-accent: rgba(217, 119, 6, 0.30);
+  --text-primary: #062e25;
+  --text-secondary: #1e293b;
+  --text-muted: #334155;
+  --brand-color: #005953;
+  --accent-gold: #b45309;
+  --accent-gold-bright: #d97706;
+  --emerald-soft: rgba(0, 89, 83, 0.08);
+  --gold-soft: rgba(217, 119, 6, 0.10);
 }
 
-/* Base Styles */
+html.dark {
+  --bg-surface: #030a08;
+  --bg-elevated: #061511;
+  --bg-card: rgba(2, 44, 34, 0.35);
+  --header-bg: rgba(3, 10, 8, 0.84);
+  --border-card: rgba(251, 191, 36, 0.15);
+  --border-accent: rgba(251, 191, 36, 0.30);
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --brand-color: #ffffff;
+  --accent-gold: #fbbf24;
+  --accent-gold-bright: #f59e0b;
+  --emerald-soft: rgba(16, 185, 129, 0.12);
+  --gold-soft: rgba(251, 191, 36, 0.12);
+}
+
 html {
-    scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
 
 body {
-    font-family: 'Inter', sans-serif;
-    color: var(--dark-color);
-    background-color: var(--light-gray);
-    line-height: 1.6;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-surface);
+  color: var(--text-secondary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
 }
 
-/* Custom Utilities */
-.bg-primary { background-color: var(--primary-color) !important; }
-.text-primary { color: var(--primary-color) !important; }
-.border-primary { border-color: var(--primary-color) !important; }
-
-/* Navbar Effects */
-nav {
-    transition: var(--transition);
+.font-editorial {
+  font-family: 'Cormorant Garamond', Georgia, serif;
 }
 
-nav.scrolled {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    background-color: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+/* Typography token helpers (Light mode enforces high-contrast ink) */
+.text-ink-primary { color: var(--text-primary); }
+.text-ink-secondary { color: var(--text-secondary); }
+.text-ink-muted { color: var(--text-muted); }
+.text-brand { color: var(--brand-color); }
+.text-gold { color: var(--accent-gold); }
+.bg-surface { background-color: var(--bg-surface); }
+.bg-elevated { background-color: var(--bg-elevated); }
+
+/* Header Glassmorphism */
+.bespoke-header {
+  background: var(--header-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-accent);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-/* Hero Section */
-.hero-gradient {
-    background: radial-gradient(circle at top right, rgba(255, 204, 41, 0.1), transparent 40%);
+/* Floating Card Physics */
+.bespoke-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 16px;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.04),
+    0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.3s ease,
+              background-color 0.3s ease;
 }
 
-/* Portfolio Cards */
-.portfolio-card {
-    position: relative;
-    overflow: hidden;
-    border-radius: 1.5rem;
-    cursor: pointer;
+.bespoke-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(217, 119, 6, 0.38);
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(217, 119, 6, 0.10);
 }
 
-.portfolio-card img {
-    transition: transform 0.6s ease;
+html.dark .bespoke-card {
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.22),
+    0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
-.portfolio-card:hover img {
-    transform: scale(1.05);
+html.dark .bespoke-card:hover {
+  border-color: rgba(251, 191, 36, 0.35);
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.38),
+    0 4px 12px rgba(217, 119, 6, 0.16);
 }
 
-.portfolio-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(26, 26, 26, 0.9) 0%, rgba(26, 26, 26, 0.4) 50%, transparent 100%);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 2rem;
-    opacity: 0;
-    transition: var(--transition);
+/* Interactive selection card */
+.choice-card {
+  background-color: var(--bg-card);
+  border: 1.5px solid var(--border-card);
+  border-radius: 14px;
+  min-height: 44px;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  cursor: pointer;
 }
 
-.portfolio-card:hover .portfolio-overlay {
-    opacity: 1;
+.choice-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-gold-bright);
 }
 
-/* Buttons */
-.btn-primary {
-    background-color: var(--primary-color);
-    color: var(--dark-color);
-    padding: 1rem 2rem;
-    border-radius: 0.75rem;
-    font-weight: 700;
-    transition: var(--transition);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid transparent;
+.choice-card.is-selected {
+  border-color: var(--accent-gold-bright);
+  background-color: var(--gold-soft);
+  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.14);
 }
 
-.btn-primary:hover {
-    background-color: var(--primary-hover);
-    transform: translateY(-3px);
-    box-shadow: 0 10px 15px -3px rgba(255, 204, 41, 0.3);
+/* Primary & Glass Buttons */
+.bespoke-btn-primary {
+  background: linear-gradient(135deg, #005953 0%, #02423d 100%);
+  color: #ffffff;
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  min-height: 44px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
-.btn-outline {
-    border: 2px solid var(--dark-color);
-    color: var(--dark-color);
-    padding: 1rem 2rem;
-    border-radius: 0.75rem;
-    font-weight: 700;
-    transition: var(--transition);
+.bespoke-btn-primary:hover {
+  transform: translateY(-2px) scale(1.015);
+  box-shadow: 0 12px 26px rgba(0, 89, 83, 0.25);
+  filter: brightness(1.06);
 }
 
-.btn-outline:hover {
-    background-color: var(--dark-color);
-    color: white;
+html.dark .bespoke-btn-primary {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  color: #ffffff;
+  border-color: rgba(251, 191, 36, 0.5);
 }
 
-/* Animations */
-@keyframes bounce-subtle {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+html.dark .bespoke-btn-primary:hover {
+  box-shadow: 0 12px 26px rgba(245, 158, 11, 0.25);
 }
 
-.floating-wa {
-    animation: bounce-subtle 3s infinite ease-in-out;
-    box-shadow: 0 10px 25px -5px rgba(37, 211, 102, 0.5);
+.bespoke-btn-outline {
+  background: var(--emerald-soft);
+  color: var(--brand-color);
+  border: 1px solid var(--border-card);
+  min-height: 44px;
+  transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
 }
 
-.floating-wa:hover {
-    transform: scale(1.1) rotate(5deg);
+.bespoke-btn-outline:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-gold-bright);
 }
 
-/* Responsive Grid Adjustments */
-@media (max-width: 768px) {
-    .hero-title {
-        font-size: 2.5rem;
-    }
+/* Dark Context Immunity */
+.dark-surface {
+  background: linear-gradient(160deg, #021a14 0%, #032c24 55%, #02120e 100%);
+  color: #f1f5f9;
+}
+
+.dark-surface .brand-immunity {
+  color: #ffffff !important;
+}
+
+.bespoke-btn-glass {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  min-height: 44px;
+  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.bespoke-btn-glass:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(251, 191, 36, 0.65);
+  transform: translateY(-2px);
+}
+
+/* Upload Dropzone */
+.yard-dropzone {
+  background-color: var(--bg-elevated);
+  border: 2px dashed var(--border-accent);
+  border-radius: 18px;
+  transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
+}
+
+.yard-dropzone.is-dragover {
+  border-color: var(--accent-gold-bright);
+  background-color: var(--gold-soft);
+  transform: scale(1.01);
+}
+
+/* Subtle Pulse Ring for live badge */
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.45); }
+  70% { box-shadow: 0 0 0 8px rgba(217, 119, 6, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0); }
+}
+
+.pulse-dot {
+  animation: pulse-ring 2.2s infinite;
+}
+
+/* Fade transition for wizard steps */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.step-animate {
+  animation: fadeSlideIn 0.28s ease forwards;
+}
+
+/* Custom Inputs */
+.bespoke-input {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-card);
+  border-radius: 12px;
+  min-height: 44px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bespoke-input:focus {
+  outline: none;
+  border-color: var(--accent-gold-bright);
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.16);
+}
+
+/* Media Vignette */
+.media-vignette {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.84) 0%, rgba(0, 0, 0, 0.22) 48%, transparent 100%);
 }

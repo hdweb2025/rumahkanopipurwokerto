@@ -1,205 +1,529 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rumah Kanopi Purwokerto | Spesialis Kanopi Modern & Berkualitas</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#FFCC29',
-                        dark: '#1A1A1A',
-                    }
-                }
-            }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Purwokerto Kanopi | Konsultasi Foto Halaman, Model Kanopi &amp; Video Proyek</title>
+  <meta name="description" content="Purwokerto Kanopi — Pilih model kanopi modern, unggah foto halaman rumah Anda, tentukan lokasi di Purwokerto &amp; Banyumas, dan jelajahi galeri video proyek." />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+
+  <!-- Google Fonts: Editorial Serif + Modern Geometric Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            editorial: ['"Cormorant Garamond"', 'Georgia', 'serif']
+          }
         }
-    </script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .bg-primary { background-color: #FFCC29; }
-        .text-primary { color: #FFCC29; }
-        .border-primary { border-color: #FFCC29; }
-        .hover-bg-primary:hover { background-color: #e6b825; }
-    </style>
+      }
+    };
+  </script>
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+  <!-- Custom Bespoke Styles -->
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <!-- Early theme hydration to prevent flash -->
+  <script>
+    (function () {
+      try {
+        if (localStorage.getItem('pk_theme') === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (_) {}
+    })();
+  </script>
 </head>
-<body class="bg-gray-50 text-dark overflow-x-hidden">
+<body class="antialiased selection:bg-amber-500/25">
 
-    <!-- Navbar -->
-    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md shadow-sm">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <img src="rumah kanopi purwokerto logo black.webp" alt="Logo" class="h-10">
-            </div>
-            <div class="hidden md:flex space-x-8 font-medium uppercase text-sm tracking-wider">
-                <a href="#home" class="hover:text-primary transition">Beranda</a>
-                <a href="#portfolio" class="hover:text-primary transition">Portofolio</a>
-                <a href="#tentang" class="hover:text-primary transition">Tentang Kami</a>
-                <a href="https://wa.me/6281227853040" target="_blank" class="bg-primary px-6 py-2 rounded-full font-bold hover:shadow-lg transition">Konsultasi Gratis</a>
-            </div>
-            <div class="md:hidden">
-                <i class="fa-solid fa-bars text-2xl"></i>
-            </div>
+  <!-- Toast Notification -->
+  <div id="toast-container" class="fixed top-20 right-4 z-[90] flex flex-col gap-2 pointer-events-none" aria-live="polite"></div>
+
+  <!-- Floating Glassmorphic Header -->
+  <header class="bespoke-header fixed top-0 inset-x-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 py-3 flex items-center justify-between gap-4">
+      <a href="#beranda" class="flex items-center gap-3 group focus:outline-none">
+        <span class="w-10 h-10 flex items-center justify-center text-brand transition-transform group-hover:scale-105">
+          <svg viewBox="0 0 48 48" fill="none" class="w-10 h-10" aria-hidden="true">
+            <rect x="2" y="2" width="44" height="44" rx="12" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-opacity="0.22" stroke-width="1.5"/>
+            <path d="M9 21L26 11L39 18V21.5L26 14.8L9 24.5V21Z" fill="#D97706"/>
+            <path d="M12 26.5H36V29.5H33V38H29.5V29.5H18.5V38H15V29.5H12V26.5Z" fill="currentColor"/>
+          </svg>
+        </span>
+        <div>
+          <span class="block text-lg sm:text-xl font-extrabold tracking-tight text-brand leading-none">Purwokerto Kanopi</span>
+          <span class="block text-[11px] font-semibold tracking-widest uppercase text-gold mt-1">rumahkanopipurwokerto.com</span>
         </div>
-    </nav>
+      </a>
 
+      <nav class="hidden lg:flex items-center gap-7 text-sm font-semibold text-ink-secondary" aria-label="Navigasi Utama">
+        <a href="#studio-halaman" class="hover:text-gold transition-colors py-2">Upload &amp; Model</a>
+        <a href="#pertanyaan-interaktif" class="hover:text-gold transition-colors py-2">Tanya Interaktif</a>
+        <a href="#lokasi-referensi" class="hover:text-gold transition-colors py-2">Lokasi &amp; Foto</a>
+        <a href="#galeri-video" class="hover:text-gold transition-colors py-2">Galeri Video</a>
+      </nav>
+
+      <div class="flex items-center gap-2.5">
+        <button id="theme-toggle" type="button" aria-label="Ganti mode terang atau gelap" class="bespoke-btn-outline px-3.5 py-2 rounded-xl flex items-center gap-2 text-xs sm:text-sm font-semibold">
+          <i id="theme-icon" class="fa-solid fa-moon" aria-hidden="true"></i>
+          <span id="theme-label" class="hidden sm:inline">Mode Gelap</span>
+        </button>
+        <a href="#studio-halaman" class="bespoke-btn-primary px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold inline-flex items-center gap-2">
+          <i class="fa-solid fa-camera" aria-hidden="true"></i>
+          <span>Upload Foto</span>
+        </a>
+        <button id="mobile-menu-btn" type="button" aria-label="Buka menu navigasi" aria-expanded="false" class="lg:hidden bespoke-btn-outline w-11 h-11 rounded-xl flex items-center justify-center">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-amber-600/20 px-4 py-3 space-y-1 bg-surface">
+      <a href="#studio-halaman" class="mobile-nav-link block px-3 py-3 rounded-xl font-semibold text-ink-primary hover:bg-amber-500/10">Upload Halaman &amp; Model Kanopi</a>
+      <a href="#pertanyaan-interaktif" class="mobile-nav-link block px-3 py-3 rounded-xl font-semibold text-ink-primary hover:bg-amber-500/10">Pertanyaan Interaktif</a>
+      <a href="#lokasi-referensi" class="mobile-nav-link block px-3 py-3 rounded-xl font-semibold text-ink-primary hover:bg-amber-500/10">Lokasi &amp; Referensi Halaman</a>
+      <a href="#galeri-video" class="mobile-nav-link block px-3 py-3 rounded-xl font-semibold text-ink-primary hover:bg-amber-500/10">Galeri Video Proyek</a>
+    </div>
+  </header>
+
+  <main>
     <!-- Hero Section -->
-    <section id="home" class="pt-32 pb-20 md:pt-48 md:pb-32 bg-white">
-        <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
-            <div>
-                <span class="inline-block bg-primary px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4">No. 1 di Purwokerto</span>
-                <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6">
-                    Wujudkan Kanopi <br><span class="text-primary underline decoration-dark">Impian Anda</span>
-                </h1>
-                <p class="text-gray-600 text-lg mb-8 max-w-lg">
-                    Spesialis pembuatan kanopi modern dengan material berkualitas tinggi. Estetik, kokoh, dan tahan lama untuk hunian nyaman Anda di Purwokerto.
-                </p>
-                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                    <a href="https://wa.me/6281227853040" target="_blank" class="bg-primary text-center px-8 py-4 rounded-xl font-bold text-lg hover:shadow-xl hover:-translate-y-1 transition flex items-center justify-center">
-                        <i class="fa-brands fa-whatsapp mr-2 text-xl"></i> Tanya Harga Sekarang
-                    </a>
-                    <a href="#portfolio" class="border-2 border-dark text-center px-8 py-4 rounded-xl font-bold text-lg hover:bg-dark hover:text-white transition">Lihat Galeri</a>
-                </div>
+    <section id="beranda" class="pt-28 sm:pt-36 pb-16 sm:pb-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          <div class="lg:col-span-6 space-y-6">
+            <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-amber-600/30 bg-amber-500/10 text-xs font-bold uppercase tracking-widest text-gold">
+              <span class="w-2 h-2 rounded-full bg-amber-500 pulse-dot"></span>
+              <span>Purwokerto &amp; Banyumas • Studio Kanopi Modern</span>
             </div>
-            <div class="relative">
-                <div class="absolute -top-10 -left-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl"></div>
-                <img src="assets/rumah-kanopi-purwokerto-a.webp" alt="Hero Image" class="rounded-3xl shadow-2xl relative z-10 w-full h-[500px] object-cover">
-                <div class="absolute -bottom-6 -right-6 bg-white p-6 rounded-2xl shadow-xl z-20 hidden md:block border-l-4 border-primary">
-                    <p class="font-bold text-2xl">100+</p>
-                    <p class="text-gray-500 text-sm font-medium">Proyek Selesai</p>
-                </div>
+
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-ink-primary leading-[1.1]">
+              Rancang Kanopi
+              <span class="font-editorial italic font-bold text-gold block sm:inline">Sesuai Halaman</span>
+              Rumah Anda.
+            </h1>
+
+            <p class="text-base sm:text-lg text-ink-secondary leading-relaxed max-w-xl">
+              Unggah foto halaman rumah Anda, pilih model kanopi favorit, jawab pertanyaan singkat yang interaktif, dan tandai lokasi Anda di Purwokerto untuk mendapatkan rekomendasi desain yang presisi.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-3.5 pt-1">
+              <a href="#studio-halaman" class="bespoke-btn-primary px-6 py-3.5 rounded-2xl font-bold text-sm sm:text-base inline-flex items-center justify-center gap-2.5">
+                <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
+                <span>Upload Foto Halaman Rumah</span>
+              </a>
+              <a href="#galeri-video" class="bespoke-btn-outline px-6 py-3.5 rounded-2xl font-bold text-sm sm:text-base inline-flex items-center justify-center gap-2.5">
+                <i class="fa-solid fa-circle-play text-gold" aria-hidden="true"></i>
+                <span>Lihat Etalase Video</span>
+              </a>
             </div>
+
+            <div class="grid grid-cols-3 gap-4 pt-4 border-t border-emerald-900/10 dark:border-amber-400/15">
+              <div>
+                <p class="text-xl sm:text-2xl font-extrabold text-ink-primary">6 Model</p>
+                <p class="text-xs sm:text-sm font-medium text-ink-muted">Kurasi Arsitektural</p>
+              </div>
+              <div>
+                <p class="text-xl sm:text-2xl font-extrabold text-ink-primary">Instan</p>
+                <p class="text-xs sm:text-sm font-medium text-ink-muted">Preview Foto Halaman</p>
+              </div>
+              <div>
+                <p class="text-xl sm:text-2xl font-extrabold text-ink-primary">Video</p>
+                <p class="text-xs sm:text-sm font-medium text-ink-muted">Siap Render Proyek</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-6">
+            <div class="bespoke-card overflow-hidden p-2.5 sm:p-3">
+              <div class="relative rounded-xl overflow-hidden aspect-[16/11]">
+                <img src="assets/img/hero-kanopi-purwokerto.jpg" alt="Contoh kanopi modern halaman rumah Purwokerto Kanopi" class="w-full h-full object-cover object-center" />
+                <div class="absolute inset-0 media-vignette pointer-events-none"></div>
+                <div class="absolute bottom-4 left-4 right-4 flex flex-wrap items-end justify-between gap-3">
+                  <div class="text-white">
+                    <span class="inline-block px-2.5 py-1 rounded-lg bg-amber-500/90 text-slate-950 text-[11px] font-extrabold uppercase tracking-wider mb-1.5">Purwokerto Kanopi</span>
+                    <p class="text-base sm:text-lg font-bold leading-snug">Kaca Smoked Tempered &amp; Rangka Baja Hitam</p>
+                  </div>
+                  <a href="#studio-halaman" class="bespoke-btn-glass px-4 py-2 rounded-xl text-xs font-bold inline-flex items-center gap-2">
+                    <span>Coba di Halaman Anda</span>
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </section>
 
-    <!-- Features -->
-    <section id="tentang" class="py-20 bg-gray-50">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold mb-16">Kenapa Memilih Kami?</h2>
-            <div class="grid md:grid-cols-3 gap-12">
-                <div class="bg-white p-10 rounded-3xl shadow-sm hover:shadow-md transition group">
-                    <div class="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-primary transition">
-                        <i class="fa-solid fa-shield-halved text-3xl text-primary group-hover:text-white"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4">Material Premium</h3>
-                    <p class="text-gray-500">Kami hanya menggunakan material berkualitas standar tinggi untuk daya tahan maksimal.</p>
-                </div>
-                <div class="bg-white p-10 rounded-3xl shadow-sm hover:shadow-md transition group">
-                    <div class="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-primary transition">
-                        <i class="fa-solid fa-user-tie text-3xl text-primary group-hover:text-white"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4">Tim Ahli</h3>
-                    <p class="text-gray-500">Dikerjakan oleh teknisi berpengalaman yang menjamin kerapian dan ketepatan waktu.</p>
-                </div>
-                <div class="bg-white p-10 rounded-3xl shadow-sm hover:shadow-md transition group">
-                    <div class="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-primary transition">
-                        <i class="fa-solid fa-clock text-3xl text-primary group-hover:text-white"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4">Garansi Penuh</h3>
-                    <p class="text-gray-500">Setiap pengerjaan kami berikan garansi sebagai jaminan kepuasan pelanggan.</p>
-                </div>
-            </div>
+    <!-- Section 1: Studio Halaman Rumah (Upload Foto + Pilihan Model Kanopi) -->
+    <section id="studio-halaman" class="py-16 sm:py-24 bg-elevated/60 border-y border-emerald-900/10 dark:border-amber-400/10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-2xl mb-12">
+          <span class="text-xs font-extrabold uppercase tracking-widest text-gold">Langkah 1 &amp; 2 • Studio Interaktif</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-ink-primary mt-2">Upload Foto Halaman &amp; Pilih Model Kanopi</h2>
+          <p class="text-ink-secondary mt-3 text-base">
+            Unggah foto halaman depan, carport, atau teras rumah Anda langsung dari perangkat (aman &amp; hanya diproses di browser Anda), lalu pasangkan dengan model kanopi pilihan.
+          </p>
         </div>
-    </section>
 
-    <!-- Portfolio Section -->
-    <section id="portfolio" class="py-20 bg-white">
-        <div class="container mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-16">
+        <div class="grid lg:grid-cols-12 gap-8 items-start">
+          <!-- Left: Home Yard Photo Uploader -->
+          <div class="lg:col-span-5 bespoke-card p-6 sm:p-7 space-y-6">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <h3 class="text-xl font-bold text-ink-primary">Foto Halaman Rumah Anda</h3>
+                <p class="text-sm text-ink-muted">Format JPG, PNG, atau WEBP</p>
+              </div>
+              <button id="use-sample-photo-btn" type="button" class="bespoke-btn-outline px-3 py-2 rounded-xl text-xs font-bold">
+                Pakai Foto Contoh
+              </button>
+            </div>
+
+            <!-- Dropzone & Preview -->
+            <div id="yard-dropzone" class="yard-dropzone p-5 text-center cursor-pointer relative" tabindex="0" role="button" aria-label="Pilih atau seret foto halaman rumah Anda ke sini">
+              <input id="yard-file-input" type="file" accept="image/*" class="hidden" />
+
+              <div id="yard-empty-state" class="py-8 space-y-3">
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-500/15 text-gold flex items-center justify-center text-2xl">
+                  <i class="fa-solid fa-house-chimney-window" aria-hidden="true"></i>
+                </div>
+                <p class="text-base font-bold text-ink-primary">Klik atau Seret Foto Halaman Rumah</p>
+                <p class="text-sm text-ink-muted max-w-xs mx-auto">Ambil foto tampak depan carport, teras, atau area halaman yang ingin dipasangi kanopi.</p>
+                <span class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bespoke-btn-primary text-xs font-bold mt-2">
+                  <i class="fa-solid fa-upload" aria-hidden="true"></i> Pilih Foto dari Galeri / Kamera
+                </span>
+              </div>
+
+              <div id="yard-preview-state" class="hidden space-y-3 text-left">
+                <div class="relative rounded-xl overflow-hidden aspect-[4/3] bg-slate-900">
+                  <img id="yard-preview-img" src="" alt="Preview foto halaman rumah yang diunggah" class="w-full h-full object-cover object-center" />
+                  <div class="absolute inset-0 media-vignette pointer-events-none"></div>
+                  <div class="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
+                    <span id="yard-overlay-badge" class="px-3 py-1.5 rounded-lg bg-slate-950/80 text-amber-300 border border-amber-400/40 text-xs font-bold backdrop-blur-md">
+                      Model: Kaca Tempered &amp; Baja Hitam
+                    </span>
+                    <button id="yard-remove-btn" type="button" aria-label="Hapus foto halaman" class="w-9 h-9 rounded-lg bg-slate-950/80 text-white hover:bg-red-600 transition flex items-center justify-center">
+                      <i class="fa-solid fa-trash-can text-xs" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div class="absolute bottom-3 left-3 right-3 text-white flex items-center justify-between text-xs font-semibold">
+                    <span id="yard-file-meta">Foto siap</span>
+                    <span id="yard-angle-badge" class="px-2.5 py-1 rounded-md bg-white/15 backdrop-blur-sm">Tampak Depan</span>
+                  </div>
+                </div>
+                <button id="yard-change-btn" type="button" class="w-full bespoke-btn-outline py-2.5 rounded-xl text-xs font-bold">
+                  <i class="fa-solid fa-rotate mr-1.5" aria-hidden="true"></i> Ganti Foto Halaman Lain
+                </button>
+              </div>
+            </div>
+
+            <!-- Yard Angle & Dimension Controls -->
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-ink-muted mb-2">Sudut Foto Halaman</label>
+                <div class="grid grid-cols-3 gap-2" id="angle-selector">
+                  <button type="button" data-angle="Tampak Depan" class="choice-card is-selected px-2 py-2.5 text-xs font-bold text-ink-primary">Tampak Depan</button>
+                  <button type="button" data-angle="Area Carport" class="choice-card px-2 py-2.5 text-xs font-bold text-ink-primary">Area Carport</button>
+                  <button type="button" data-angle="Teras / Taman" class="choice-card px-2 py-2.5 text-xs font-bold text-ink-primary">Teras / Taman</button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
                 <div>
-                    <h2 class="text-4xl font-bold mb-4 text-dark">Portofolio Terbaru</h2>
-                    <p class="text-gray-500 max-w-md">Hasil pengerjaan kanopi terbaik kami di berbagai lokasi di Purwokerto dan sekitarnya.</p>
+                  <label for="yard-length" class="block text-xs font-bold uppercase tracking-wider text-ink-muted mb-1.5">Panjang (meter)</label>
+                  <input id="yard-length" type="number" min="1" max="50" step="0.5" value="5" class="bespoke-input w-full px-3.5 py-2.5 text-sm font-semibold" />
                 </div>
-                <a href="https://wa.me/6281227853040" target="_blank" class="hidden md:block text-primary font-bold border-b-2 border-primary pb-1 hover:text-dark hover:border-dark transition">Konsultasi Portofolio Lainnya <i class="fa-solid fa-arrow-right ml-2"></i></a>
+                <div>
+                  <label for="yard-width" class="block text-xs font-bold uppercase tracking-wider text-ink-muted mb-1.5">Lebar (meter)</label>
+                  <input id="yard-width" type="number" min="1" max="50" step="0.5" value="4" class="bespoke-input w-full px-3.5 py-2.5 text-sm font-semibold" />
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-600/25">
+                <span class="text-sm font-semibold text-ink-primary">Perkiraan Luas Kanopi</span>
+                <span id="yard-area-output" class="text-lg font-extrabold text-gold">20 m²</span>
+              </div>
+
+              <div>
+                <label for="yard-notes" class="block text-xs font-bold uppercase tracking-wider text-ink-muted mb-1.5">Catatan Kondisi Halaman (Opsional)</label>
+                <textarea id="yard-notes" rows="2" placeholder="Contoh: Halaman menghadap timur, ingin tanpa tiang tengah agar muat 2 mobil..." class="bespoke-input w-full px-3.5 py-2.5 text-sm"></textarea>
+              </div>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="group relative overflow-hidden rounded-3xl h-[400px]">
-                    <img src="assets/rumah-kanopi-purwokerto-b.webp" alt="Portfolio" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                    <div class="absolute inset-0 bg-gradient-to-t from-dark/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-8">
-                        <div>
-                            <p class="text-primary font-bold uppercase text-xs tracking-widest mb-1">Modern Style</p>
-                            <h3 class="text-white text-xl font-bold">Kanopi Minimalis Kaca</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="group relative overflow-hidden rounded-3xl h-[400px]">
-                    <img src="assets/rumah-kanopi-purwokerto-c.webp" alt="Portfolio" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                    <div class="absolute inset-0 bg-gradient-to-t from-dark/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-8">
-                        <div>
-                            <p class="text-primary font-bold uppercase text-xs tracking-widest mb-1">Industrial Style</p>
-                            <h3 class="text-white text-xl font-bold">Kanopi Alderon Elegant</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="group relative overflow-hidden rounded-3xl h-[400px]">
-                    <img src="assets/rumah-kanopi-purwokerto-d.webp" alt="Portfolio" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                    <div class="absolute inset-0 bg-gradient-to-t from-dark/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-8">
-                        <div>
-                            <p class="text-primary font-bold uppercase text-xs tracking-widest mb-1">Luxury Style</p>
-                            <h3 class="text-white text-xl font-bold">Kanopi Polycarbonate</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="md:col-span-2 group relative overflow-hidden rounded-3xl h-[400px]">
-                    <img src="assets/rumah-kanopi-purwokerto-e.webp" alt="Portfolio" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                    <div class="absolute inset-0 bg-gradient-to-t from-dark/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-8">
-                        <div>
-                            <p class="text-primary font-bold uppercase text-xs tracking-widest mb-1">Custom Project</p>
-                            <h3 class="text-white text-2xl font-bold">Area Parkir Komersial</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="group relative overflow-hidden rounded-3xl h-[400px]">
-                    <img src="assets/rumah-kanopi-purwokerto-a.webp" alt="Portfolio" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                    <div class="absolute inset-0 bg-gradient-to-t from-dark/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-8">
-                        <div>
-                            <p class="text-primary font-bold uppercase text-xs tracking-widest mb-1">Modern Home</p>
-                            <h3 class="text-white text-xl font-bold">Teras Rumah Elegan</h3>
-                        </div>
-                    </div>
-                </div>
+          </div>
+
+          <!-- Right: Canopy Model Picker -->
+          <div class="lg:col-span-7 space-y-5">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h3 class="text-xl font-bold text-ink-primary">Pilihan Model Kanopi</h3>
+                <p class="text-sm text-ink-muted">Klik salah satu model untuk memasangkannya dengan foto halaman rumah Anda.</p>
+              </div>
+              <span id="selected-model-pill" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-500/15 text-gold border border-amber-600/30">
+                Terpilih: Kaca Tempered &amp; Baja Hitam
+              </span>
             </div>
+
+            <div id="canopy-models-grid" class="grid sm:grid-cols-2 gap-4">
+              <!-- Populated dynamically from PK_CONFIG.canopyModels -->
+            </div>
+
+            <!-- Selected Model Specification Box -->
+            <div id="selected-model-detail" class="bespoke-card p-5 sm:p-6">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
         </div>
+      </div>
     </section>
 
-    <!-- Call to Action -->
-    <section class="py-20 bg-dark text-white">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-4xl md:text-5xl font-extrabold mb-8">Siap Mempercantik Rumah Anda?</h2>
-            <p class="text-gray-400 text-lg mb-12 max-w-2xl mx-auto">
-                Konsultasikan kebutuhan kanopi Anda secara gratis. Kami akan memberikan estimasi biaya dan pilihan desain terbaik yang sesuai dengan anggaran Anda.
-            </p>
-            <a href="https://wa.me/6281227853040" target="_blank" class="inline-flex items-center bg-primary text-dark px-10 py-5 rounded-2xl font-bold text-xl hover:shadow-2xl hover:scale-105 transition-all">
-                <i class="fa-brands fa-whatsapp mr-3 text-2xl"></i> Chat WhatsApp Sekarang
-            </a>
+    <!-- Section 2: Pertanyaan Interaktif & Ringkasan Konsultasi -->
+    <section id="pertanyaan-interaktif" class="py-16 sm:py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-2xl mb-12">
+          <span class="text-xs font-extrabold uppercase tracking-widest text-gold">Langkah 3 • Pertanyaan Interaktif</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-ink-primary mt-2">Temukan Spesifikasi Paling Pas</h2>
+          <p class="text-ink-secondary mt-3 text-base">
+            Jawab 4 pertanyaan singkat di bawah ini untuk melengkapi kebutuhan kanopi Anda, lalu lihat ringkasan konsultasi siap kirim.
+          </p>
         </div>
+
+        <div class="grid lg:grid-cols-12 gap-8 items-start">
+          <!-- Interactive Wizard -->
+          <div class="lg:col-span-7 bespoke-card p-6 sm:p-8 space-y-6">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div class="flex items-center gap-2" id="wizard-step-dots" aria-label="Progres pertanyaan"></div>
+              <span id="wizard-progress-text" class="text-xs font-bold uppercase tracking-wider text-gold">Pertanyaan 1 dari 4</span>
+            </div>
+
+            <div class="w-full h-2 rounded-full bg-emerald-950/10 dark:bg-white/10 overflow-hidden">
+              <div id="wizard-progress-bar" class="h-full bg-amber-500 rounded-full transition-all duration-300" style="width: 25%"></div>
+            </div>
+
+            <div id="wizard-question-container" class="step-animate min-h-[260px]">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <div class="flex items-center justify-between gap-3 pt-4 border-t border-emerald-900/10 dark:border-amber-400/15">
+              <button id="wizard-prev-btn" type="button" class="bespoke-btn-outline px-5 py-2.5 rounded-xl text-sm font-bold disabled:opacity-40 disabled:pointer-events-none">
+                <i class="fa-solid fa-arrow-left mr-2" aria-hidden="true"></i> Sebelumnya
+              </button>
+              <button id="wizard-next-btn" type="button" class="bespoke-btn-primary px-6 py-2.5 rounded-xl text-sm font-bold">
+                <span>Lanjut</span> <i class="fa-solid fa-arrow-right ml-2" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Live Summary Card -->
+          <div class="lg:col-span-5 bespoke-card p-6 sm:p-7 space-y-5 lg:sticky lg:top-24">
+            <div class="flex items-center justify-between gap-3 pb-4 border-b border-emerald-900/10 dark:border-amber-400/15">
+              <div>
+                <span class="text-[11px] font-extrabold uppercase tracking-widest text-gold">Ringkasan Otomatis</span>
+                <h3 class="text-xl font-bold text-ink-primary">Profil Kebutuhan Kanopi</h3>
+              </div>
+              <span class="w-10 h-10 rounded-xl bg-amber-500/15 text-gold flex items-center justify-center">
+                <i class="fa-solid fa-clipboard-check" aria-hidden="true"></i>
+              </span>
+            </div>
+
+            <dl id="live-summary-list" class="space-y-3 text-sm">
+              <!-- Populated dynamically -->
+            </dl>
+
+            <div class="pt-2 space-y-2.5">
+              <button id="send-consultation-btn" type="button" class="w-full bespoke-btn-primary px-5 py-3.5 rounded-xl font-bold text-sm inline-flex items-center justify-center gap-2.5">
+                <i class="fa-brands fa-whatsapp text-lg" aria-hidden="true"></i>
+                <span>Siapkan &amp; Kirim Ringkasan Konsultasi</span>
+              </button>
+              <div class="grid grid-cols-2 gap-2.5">
+                <button id="copy-summary-btn" type="button" class="bespoke-btn-outline px-4 py-2.5 rounded-xl text-xs font-bold inline-flex items-center justify-center gap-2">
+                  <i class="fa-regular fa-copy" aria-hidden="true"></i>
+                  <span>Salin Teks</span>
+                </button>
+                <button id="reset-wizard-btn" type="button" class="bespoke-btn-outline px-4 py-2.5 rounded-xl text-xs font-bold inline-flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+                  <span>Ulangi Pilihan</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive FAQ Accordion -->
+        <div class="mt-16">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+            <div>
+              <span class="text-xs font-extrabold uppercase tracking-widest text-gold">Tanya Jawab Interaktif</span>
+              <h3 class="text-2xl font-extrabold text-ink-primary mt-1">Pertanyaan yang Sering Diajukan</h3>
+            </div>
+          </div>
+          <div id="faq-container" class="grid md:grid-cols-2 gap-4">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="py-12 border-t border-gray-100 bg-white">
-        <div class="container mx-auto px-6 flex flex-col md:row justify-between items-center">
-            <div class="mb-8 md:mb-0">
-                <img src="rumah kanopi purwokerto logo black.webp" alt="Logo" class="h-8">
-            </div>
-            <p class="text-gray-400 text-sm">
-                &copy; 2026 Rumah Kanopi Purwokerto. All rights reserved. Made with <span class="text-red-500">❤</span> by HD-Web
+    <!-- Section 3: Lokasi Purwokerto & Referensi Foto Halaman Rumah -->
+    <section id="lokasi-referensi" class="py-16 sm:py-24 bg-elevated/60 border-y border-emerald-900/10 dark:border-amber-400/10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+        <!-- Location Picker & Map -->
+        <div>
+          <div class="max-w-2xl mb-10">
+            <span class="text-xs font-extrabold uppercase tracking-widest text-gold">Langkah 4 • Lokasi Survei</span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-ink-primary mt-2">Lokasi Rumah di Purwokerto &amp; Banyumas</h2>
+            <p class="text-ink-secondary mt-3 text-base">
+              Pilih kecamatan lokasi rumah Anda untuk melihat rekomendasi struktur sesuai cuaca lokal, atau sertakan titik alamat Google Maps.
             </p>
-            <div class="flex space-x-6 mt-8 md:mt-0">
-                <a href="#" class="text-gray-400 hover:text-primary transition"><i class="fa-brands fa-instagram text-xl"></i></a>
-                <a href="#" class="text-gray-400 hover:text-primary transition"><i class="fa-brands fa-facebook text-xl"></i></a>
+          </div>
+
+          <div class="grid lg:grid-cols-12 gap-8 items-start">
+            <div class="lg:col-span-7 grid sm:grid-cols-2 gap-4" id="location-cards-grid">
+              <!-- Populated dynamically -->
             </div>
+
+            <div class="lg:col-span-5 bespoke-card p-5 sm:p-6 space-y-4">
+              <div class="rounded-xl overflow-hidden border border-emerald-900/10 dark:border-amber-400/20 aspect-[16/10] bg-slate-200 dark:bg-slate-900">
+                <iframe
+                  title="Peta Area Layanan Purwokerto Kanopi"
+                  src="https://www.openstreetmap.org/export/embed.html?bbox=109.1650%2C-7.4750%2C109.3050%2C-7.3700&amp;layer=mapnik&amp;marker=-7.4243%2C109.2302"
+                  class="w-full h-full border-0"
+                  loading="lazy">
+                </iframe>
+              </div>
+
+              <div>
+                <label for="location-address-input" class="block text-xs font-bold uppercase tracking-wider text-ink-muted mb-1.5">Alamat / Link Google Maps Rumah Anda</label>
+                <input id="location-address-input" type="text" placeholder="Contoh: Perum Griya Satria, Purwokerto Utara atau link Maps" class="bespoke-input w-full px-3.5 py-2.5 text-sm" />
+              </div>
+
+              <div class="flex flex-wrap gap-2.5">
+                <button id="detect-gps-btn" type="button" class="bespoke-btn-outline px-4 py-2.5 rounded-xl text-xs font-bold inline-flex items-center gap-2">
+                  <i class="fa-solid fa-location-crosshairs text-gold" aria-hidden="true"></i>
+                  <span>Ambil Titik GPS Saya</span>
+                </button>
+                <a href="https://maps.google.com/?q=Purwokerto,+Banyumas" target="_blank" rel="noopener noreferrer" class="bespoke-btn-outline px-4 py-2.5 rounded-xl text-xs font-bold inline-flex items-center gap-2">
+                  <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
+                  <span>Buka Google Maps</span>
+                </a>
+              </div>
+              <p id="gps-status-text" class="text-xs text-ink-muted hidden"></p>
+            </div>
+          </div>
         </div>
-    </footer>
 
-    <!-- Floating WhatsApp -->
-    <a href="https://wa.me/6281227853040" target="_blank" class="fixed bottom-8 right-8 z-[100] bg-[#25D366] text-white w-16 h-16 rounded-full flex items-center justify-center text-3xl shadow-2xl hover:scale-110 transition-all animate-bounce">
-        <i class="fa-brands fa-whatsapp"></i>
-    </a>
+        <!-- Home Yard Photo References -->
+        <div>
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+            <div>
+              <span class="text-xs font-extrabold uppercase tracking-widest text-gold">Inspirasi Fasad &amp; Halaman</span>
+              <h3 class="text-2xl sm:text-3xl font-extrabold text-ink-primary mt-1">Foto Halaman Rumah &amp; Pemasangan</h3>
+            </div>
+            <p class="text-sm text-ink-muted max-w-md">Referensi proporsi kanopi pada halaman rumah di wilayah Purwokerto.</p>
+          </div>
 
+          <div id="yard-references-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Galeri Video Proyek (Siap Video Generated Menyusul) -->
+    <section id="galeri-video" class="py-16 sm:py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
+          <div class="max-w-2xl">
+            <span class="text-xs font-extrabold uppercase tracking-widest text-gold">Etalase Video • Segera Diisi Konten Render</span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-ink-primary mt-2">Galeri Video Purwokerto Kanopi</h2>
+            <p class="text-ink-secondary mt-3 text-base">
+              Etalase khusus untuk menampilkan video simulasi desain dan dokumentasi hasil pengerjaan kanopi. Video yang di-generate menyusul dapat langsung ditambahkan melalui file konfigurasi video.
+            </p>
+          </div>
+
+          <div id="video-filter-tabs" class="flex flex-wrap gap-2" role="tablist" aria-label="Filter kategori video">
+            <button type="button" data-filter="Semua" class="choice-card is-selected px-4 py-2 text-xs font-bold text-ink-primary">Semua</button>
+            <button type="button" data-filter="Carport" class="choice-card px-4 py-2 text-xs font-bold text-ink-primary">Carport</button>
+            <button type="button" data-filter="Teras &amp; Pergola" class="choice-card px-4 py-2 text-xs font-bold text-ink-primary">Teras &amp; Pergola</button>
+            <button type="button" data-filter="Detail Material" class="choice-card px-4 py-2 text-xs font-bold text-ink-primary">Detail Material</button>
+          </div>
+        </div>
+
+        <div id="video-grid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+          <!-- Populated dynamically from PK_VIDEOS -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Luxury Dark Footer (Dark Context Immunity) -->
+  <footer class="dark-surface border-t border-amber-400/20 py-14">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 pb-8 border-b border-white/15">
+        <div class="space-y-2">
+          <div class="flex items-center gap-3">
+            <svg viewBox="0 0 48 48" fill="none" class="w-9 h-9 text-white" aria-hidden="true">
+              <rect x="2" y="2" width="44" height="44" rx="12" fill="white" fill-opacity="0.1" stroke="white" stroke-opacity="0.25" stroke-width="1.5"/>
+              <path d="M9 21L26 11L39 18V21.5L26 14.8L9 24.5V21Z" fill="#FBBF24"/>
+              <path d="M12 26.5H36V29.5H33V38H29.5V29.5H18.5V38H15V29.5H12V26.5Z" fill="#FFFFFF"/>
+            </svg>
+            <span class="text-xl font-extrabold brand-immunity">Purwokerto Kanopi</span>
+          </div>
+          <p class="text-sm text-emerald-50/85 max-w-md">
+            Konsultasi desain kanopi modern berbasis foto halaman rumah, pertanyaan interaktif, dan video proyek di Purwokerto &amp; Banyumas.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+          <a href="#studio-halaman" class="bespoke-btn-glass px-5 py-2.5 rounded-xl text-sm font-bold inline-flex items-center gap-2">
+            <i class="fa-solid fa-camera" aria-hidden="true"></i>
+            <span>Upload Halaman</span>
+          </a>
+          <a href="#galeri-video" class="bespoke-btn-glass px-5 py-2.5 rounded-xl text-sm font-bold inline-flex items-center gap-2">
+            <i class="fa-solid fa-play" aria-hidden="true"></i>
+            <span>Galeri Video</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-emerald-50/80">
+        <p>&copy; 2026 Purwokerto Kanopi &bull; rumahkanopipurwokerto.com</p>
+        <p>Melayani Purwokerto Utara, Timur, Selatan, Barat, Baturraden &amp; Sokaraja</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Video & Summary Modal -->
+  <div id="pk-modal" class="fixed inset-0 z-[80] hidden items-center justify-center p-4 bg-black/75 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="pk-modal-title">
+    <div class="bespoke-card max-w-2xl w-full p-5 sm:p-6 space-y-4 relative max-h-[90vh] overflow-y-auto">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <span id="pk-modal-badge" class="text-[11px] font-extrabold uppercase tracking-widest text-gold">Preview</span>
+          <h3 id="pk-modal-title" class="text-xl font-bold text-ink-primary mt-0.5">Judul</h3>
+        </div>
+        <button id="pk-modal-close" type="button" aria-label="Tutup jendela" class="w-10 h-10 rounded-xl bespoke-btn-outline flex items-center justify-center shrink-0">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div id="pk-modal-body" class="space-y-4"></div>
+    </div>
+  </div>
+
+  <!-- Config & App Scripts -->
+  <script src="data/site-config.js"></script>
+  <script src="data/videos.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
